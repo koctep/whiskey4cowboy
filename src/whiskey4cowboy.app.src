@@ -1,0 +1,11 @@
+{application, whiskey4cowboy,
+ [
+  {description, "Removes try .. catch blocks from cowboy sources"},
+  {vsn, git},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.
