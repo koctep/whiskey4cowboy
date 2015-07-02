@@ -20,6 +20,7 @@
           result = <<>>,
           mtime = {{1970, 1, 1}, {0, 0, 0}},
           path = [],
+          files = [],
           suffix = <<>>,
           suflen = 0,
           recursive = true,
@@ -35,7 +36,10 @@ init(_Type, _Req, _Opts) ->
 
 rest_init(Req, Opts) ->
   State = parse_opts(Opts, #state{}),
-  NewState = add_dir(State),
+  NewState = case State#state.files of
+               [] -> add_dir(State);
+               Files -> add_files(Files, State)
+             end,
   {ok, Req, NewState}.
 
 allowed_methods(Req, State) ->
@@ -114,6 +118,10 @@ parse_opts([{priv_dir, App, Path} | T], State) ->
                            {ok, PD, Path}
                        end,
   parse_opts(T, State#state{path = [Dir, PrivDir]});
+parse_opts([{priv_files, App, Path, Files} | T], State) ->
+  parse_opts([{priv_dir, App, Path} | T], State#state{files = Files});
+parse_opts([{priv_files, App, Files} | T], State) ->
+  parse_opts([{priv_files, App, ".", Files} | T], State);
 parse_opts([{suffix, Suffix} | T], State) ->
   parse_opts(T, State#state{
                   suffix = list_to_binary('_':reverse(Suffix)),
