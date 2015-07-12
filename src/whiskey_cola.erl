@@ -75,8 +75,12 @@ add_files([File | Files], #state{path = Path,
                                  suffix = Suffix,
                                  suflen = SufLen
                                 } = State) ->
-  {ok, #file_info{type = Type, mtime = Time}} = file:read_file_info(
-                                                  '_':join(lists:reverse([File | Path]), "/")),
+  FullName = '_':join(lists:reverse([File | Path]), "/"),
+  {ok, #file_info{type = Type, mtime = Time}} = case file:read_file_info(FullName) of
+                                                  {error, enoent} ->
+                                                    throw({"file not found", FullName});
+                                                  Info -> Info
+                                                end,
   NewState = case Type of
                directory when Recursive andalso Depth > 0 ->
                  NewDepth = case Depth of
