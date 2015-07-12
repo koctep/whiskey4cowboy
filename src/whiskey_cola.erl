@@ -46,7 +46,7 @@ allowed_methods(Req, State) ->
   {[<<"GET">>, <<"HEAD">>, <<"OPTIONS">>], Req, State}.
 
 content_types_provided(Req, State) ->
-  {[{<<"application/javascript">>, compile}], Req, State}.
+  {[{<<"text/css">>, compile}, {<<"application/javascript">>, compile}], Req, State}.
 
 charsets_provided(Req, State) ->
   {[<<"utf-8">>], Req, State}.
