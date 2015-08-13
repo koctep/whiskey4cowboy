@@ -111,7 +111,7 @@ add_file(#state{preadd = PreAdd, path = Path, result = Res} = State) ->
   {ok, Res1} = file:read_file('_':join(lists:reverse(Path), "/")),
   {ok, Res2} = case PreAdd of
                  undefined -> {ok, Res1};
-                 _ -> '_':apply(PreAdd, [Path, Res1])
+                 {Fun, Args} -> '_':apply(Fun, [Path, Res1, Args])
                end,
   State#state{result = <<Res/binary, "\r\n", Res2/binary>>}.
 
